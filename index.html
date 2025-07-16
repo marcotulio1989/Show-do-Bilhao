@@ -66,6 +66,10 @@
 
 <button onclick="alternarSom()" style="position: fixed; top: 10px; right: 10px; z-index: 9999; padding: 5px 10px; background: #444; color: white; border: none; border-radius: 5px;">🔈 Som</button>
 
+<div id="diamantes-display" style="position: fixed; top: 10px; left: 10px; z-index: 9999; background: #444; color: white; padding: 5px 10px; border-radius: 5px;">
+  💎 <span id="diamantes-count">0</span>
+</div>
+
 
 <div id="botao-voltar" style="display:none; position:fixed; top:20px; left:20px; z-index:1000;">
   <button onclick="voltarMenu()" style="background-color:#f4d35e; color:#000; font-weight:bold; border:none; padding:10px 14px; border-radius:8px; cursor:pointer;">
@@ -74,23 +78,16 @@
 </div>
 
 
-<div id="botao-voltar-assunto" style="display:none;" hidden style="display:none; position:fixed; bottom:30px; left:50%; transform:translateX(-50%); z-index:1000; background-color:rgba(255,255,255,0.95); border-radius:8px; padding:10px;">
+<div id="botao-voltar-assunto" style="display:none; position:fixed; bottom:30px; left:50%; transform:translateX(-50%); z-index:1000; background-color:rgba(255,255,255,0.95); border-radius:8px; padding:10px;">
   <button onclick="voltarEscolhaAssunto()" style="background-color:#f4d35e; color:#000; font-weight:bold; border:none; padding:10px 14px; border-radius:8px; cursor:pointer;">
-    ← Escolher outro assunto
+    ← Escolher outro reino
   </button>
 </div>
 
 <div class="container">
 <div id="assunto-section" style="display:block;">
-  <h2>Escolha um Assunto</h2>
-  <button onclick="selecionarAssunto('História')">História</button>
-  <button onclick="selecionarAssunto('Geografia')">Geografia</button>
-  <button onclick="selecionarAssunto('Física')">Física</button>
-  <button onclick="selecionarAssunto('Matemática')">Matemática</button>
-  <button onclick="selecionarAssunto('Biologia')">Biologia</button>
-  <button onclick="selecionarAssunto('Português')">Português</button>
-  <button onclick="selecionarAssunto('Espanhol')">Espanhol</button>
-  <button onclick="selecionarAssunto('Química')">Química</button>
+  <h2>Escolha um Reino</h2>
+  <button onclick="selecionarAssunto('Geografia')">Reino da Geografia</button>
 </div>
 
   <h1>Show do Milhão</h1>
@@ -106,7 +103,7 @@
     <button onclick="showEditPanel()">Editar/Excluir Perguntas</button>
     <button onclick="mostrarImportExport()">Importar/Exportar Perguntas</button>
 
-<button onclick="voltarEscolhaAssunto()" style="background-color: #f4d35e; color: black; font-weight: bold; padding: 15px; border: none; border-radius: 10px; margin-top: 10px; width: 100%;">Escolher Outro Assunto</button>
+<button onclick="voltarEscolhaAssunto()" style="background-color: #f4d35e; color: black; font-weight: bold; padding: 15px; border: none; border-radius: 10px; margin-top: 10px; width: 100%;">Escolher Outro Reino</button>
 
   </div>
 
@@ -157,6 +154,22 @@
   
 let tempoPorPergunta = localStorage.getItem('tempoPorPergunta') ? parseInt(localStorage.getItem('tempoPorPergunta')) : 120;
 
+let diamantes = parseInt(localStorage.getItem('diamantes')) || 0;
+
+function alternarSom() {
+  const fundo = document.getElementById('somFundo');
+  if (fundo.paused) {
+    fundo.play();
+  } else {
+    fundo.pause();
+  }
+}
+
+function atualizarDiamantes() {
+  document.getElementById('diamantes-count').textContent = diamantes;
+  localStorage.setItem('diamantes', diamantes);
+}
+
 function atualizarTempo() {
   const novoTempo = parseInt(document.getElementById('tempo-pergunta').value);
   if (!isNaN(novoTempo)) {
@@ -178,10 +191,8 @@ function selecionarAssunto(assunto) {
   assuntoSelecionado = assunto;
   document.getElementById('assunto-section').style.display = 'none';
   document.getElementById('menu').style.display = 'block';
-  document.getElementById('botao-voltar-assunto').style.display = 'block';
   document.getElementById('botao-voltar').style.display = 'none';
-  document.getElementById('botao-voltar-assunto').style.display = 'none';
-  document.getElementById('botao-voltar-assunto').style.display = 'none';
+  document.getElementById('botao-voltar-assunto').style.display = 'block';
   document.getElementById('tempo-config').style.display = 'block';
 }
 
@@ -190,30 +201,19 @@ function startQuiz() {
   perguntasAleatorias = bancoPerguntas
     .filter(p => p.assunto === assuntoSelecionado)
     .sort(() => Math.random() - 0.5);
+  if (perguntasAleatorias.length === 0) {
+    alert('Adicione perguntas para este reino primeiro!');
+    return;
+  }
   perguntaAtual = 0;
   esconderTodasAsPaginas();
   document.getElementById('quiz-section').style.display = 'block';
   document.getElementById('botao-voltar').style.display = 'none';
   document.getElementById('botao-voltar-assunto').style.display = 'none';
-  document.getElementById('botao-voltar-assunto').style.display = 'none';
   mostrarPergunta();
-
 }
 
 
-function startQuiz() {
-  perguntasAleatorias = bancoPerguntas
-    .filter(p => p.assunto === assuntoSelecionado)
-    .sort(() => Math.random() - 0.5);
-  perguntaAtual = 0;
-  esconderTodasAsPaginas();
-  document.getElementById('quiz-section').style.display = 'block';
-  document.getElementById('botao-voltar').style.display = 'none';
-  document.getElementById('botao-voltar-assunto').style.display = 'none';
-  document.getElementById('botao-voltar-assunto').style.display = 'none';
-  mostrarPergunta();
-
-  }
 
   function mostrarPergunta() {
     const p = perguntasAleatorias[perguntaAtual];
@@ -240,6 +240,10 @@ function startQuiz() {
     const audio = document.getElementById(idx === correta ? 'audio-correto' : 'audio-errado');
     audio.play();
     botao.classList.add(idx === correta ? 'highlight-correct' : 'highlight-wrong');
+    if (idx === correta) {
+      diamantes++;
+      atualizarDiamantes();
+    }
     document.getElementById('resposta').textContent =
       idx === correta ? '✔️ Resposta correta!' : '❌ Resposta errada!';
     setTimeout(() => {
@@ -273,28 +277,24 @@ function voltarEscolhaAssunto() {
   document.getElementById('assunto-section').style.display = 'block';
   document.getElementById('botao-voltar').style.display = 'none';
   document.getElementById('botao-voltar-assunto').style.display = 'none';
-  document.getElementById('botao-voltar-assunto').style.display = 'none';
-  document.getElementById('botao-voltar-assunto').style.display = 'none';
 }
 
 
 function voltarMenu() {
-    esconderTodasAsPaginas();
-    document.getElementById('menu').style.display = 'block';
-  document.getElementById('botao-voltar-assunto').style.display = 'block';
+  esconderTodasAsPaginas();
+  document.getElementById('menu').style.display = 'block';
   document.getElementById('botao-voltar').style.display = 'none';
-  document.getElementById('botao-voltar-assunto').style.display = 'none';
-  document.getElementById('botao-voltar-assunto').style.display = 'none';
+  document.getElementById('botao-voltar-assunto').style.display = 'block';
   document.getElementById('tempo-config').style.display = 'block';
-    editandoIndice = null;
-    mediaBase64 = "";
-  }
+  editandoIndice = null;
+  mediaBase64 = "";
+}
 
   function esconderTodasAsPaginas() {
-  document.getElementById('botao-voltar').style.display = 'block';
-  document.getElementById('tempo-config').style.display = 'none';
-    ['menu','form-section','quiz-section','edit-section','import-export-section'].forEach(id =>
-      document.getElementById(id).style.display = 'none');
+    document.getElementById('botao-voltar').style.display = 'block';
+    document.getElementById('tempo-config').style.display = 'none';
+    ['menu','form-section','quiz-section','edit-section','import-export-section']
+      .forEach(id => document.getElementById(id).style.display = 'none');
   }
 
   function previewMidia() {
@@ -382,6 +382,9 @@ function voltarMenu() {
     };
     reader.readAsText(file);
   }
+
+  // Atualiza contador de diamantes ao carregar a página
+  atualizarDiamantes();
 </script>
 </body>
 </html>

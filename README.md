@@ -7,15 +7,13 @@
 
 ## 🚀 Funcionalidades
 
-- Escolha de matéria: História, Geografia, Física, Matemática, Biologia, Português, Espanhol e Química
-- Várias alternativas por pergunta (até 5)
-- Banco de dados editável diretamente na interface
-- Upload de imagens direto do dispositivo
-- Sons e efeitos visuais (em breve versão com explosão e vibração!)
+- Reinos temáticos (inicialmente o **Reino da Geografia**)
+- Sistema de diamantes: acerte perguntas para acumular e utilizar em futuras compras
+- Banco de dados de perguntas editável diretamente na interface
+- Suporte a imagens e vídeos nas perguntas
 - Importação/Exportação de perguntas em JSON
 - Cronômetro com tempo configurável
-- Totalmente responsivo (mobile friendly)
-- Funciona offline após instalação como PWA
+- Totalmente responsivo e com suporte a PWA
 
 ---
 
@@ -33,14 +31,14 @@
 git clone https://github.com/seu-usuario/show-do-milhao.git
 cd show-do-milhao
 # Abra o arquivo principal
-open show_do_milhao_pwa.html
+open index.html
 ```
 
 ---
 
 ## 📁 Estrutura de arquivos
 
-- `show_do_milhao_pwa.html` – Arquivo principal do jogo
+- `index.html` – Arquivo principal do jogo
 - `manifest.json` – Arquivo de manifesto do PWA
 - `service-worker.js` – Service Worker para funcionamento offline
 - `README.md` – Este arquivo :)
